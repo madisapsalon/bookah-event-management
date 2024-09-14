@@ -1,0 +1,39 @@
+version: '3.8'
+
+services:
+  bookah-event-management:
+    build: .
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=development
+      - DATABASE_URL=postgresql://user:password@postgres_db:5432/event-management
+    depends_on:
+      - postgres_db
+    networks:
+      - backend
+    volumes:
+      - .:/app
+
+  postgres_db:
+    image: postgres:15
+    environment:
+      - POSTGRES_USER=user
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_DB=event-management
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    networks:
+      - backend
+
+networks:
+  backend:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 10.0.0.0/24
+
+volumes:
+  postgres_data:
