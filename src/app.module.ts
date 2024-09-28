@@ -7,6 +7,8 @@ import { EventsController } from './modules/events/events.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { postgresConfig } from './config/postgres.config';
 import { DataSource } from 'typeorm';
+import { ClientsModule } from '@nestjs/microservices';
+import { kafkaConfig } from './config/kafka.config';
 
 @Module({
   imports: [
@@ -17,6 +19,7 @@ import { DataSource } from 'typeorm';
       useFactory: postgresConfig,
       inject: [ConfigService],
     }),
+    ClientsModule.registerAsync(kafkaConfig(new ConfigService())),
     EventsModule,
   ],
   controllers: [AppController, EventsController],
